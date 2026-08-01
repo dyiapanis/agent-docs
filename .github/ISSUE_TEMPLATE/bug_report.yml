@@ -1,0 +1,105 @@
+name: "🐛 Bug Report"
+description: Report a bug — something that's broken, crashes, or behaves incorrectly.
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug! Please fill out the sections below so we can reproduce and fix it quickly.
+
+        **Before submitting**, please:
+        - Search [existing issues](https://github.com/dyiapanis/hermes-docs/issues) to avoid duplicates
+        - Update to the latest version (`pip install --upgrade hermes-docs`) and confirm the bug still exists
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: A clear description of what's broken. Include error messages, tracebacks, or screenshots if relevant.
+      placeholder: |
+        What happened? What did you expect to happen instead?
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: Minimal steps to trigger the bug.
+      placeholder: |
+        1. Install hermes-docs with `pip install hermes-docs[all]`
+        2. Call `create_document("docx", ...)` with ...
+        3. Error appears: ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What should have happened instead?
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behavior
+      description: What actually happened? Include full error output if available.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: module
+    attributes:
+      label: Affected Module
+      description: Which part of hermes-docs is affected?
+      options:
+        - create (docx, xlsx, pptx, pdf, odt, ods, odp)
+        - convert (pandoc-based format conversion)
+        - read (text/metadata extraction via LiteParse)
+        - Configuration / installation
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: os
+    attributes:
+      label: Operating System
+      placeholder: Ubuntu 24.04
+    validations:
+      required: true
+
+  - type: input
+    id: python-version
+    attributes:
+      label: Python Version
+      description: Output of `python --version`
+      placeholder: "3.11.9"
+    validations:
+      required: true
+
+  - type: input
+    id: plugin-version
+    attributes:
+      label: hermes-docs Version
+      description: Output of `pip show hermes-docs`
+      placeholder: "1.0.0"
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Additional Logs / Traceback (optional)
+      description: Any extra error output, tracebacks, or screenshots.
+      render: shell
+
+  - type: checkboxes
+    id: pr-ready
+    attributes:
+      label: Are you willing to submit a PR for this?
+      options:
+        - label: I'd like to fix this myself and submit a PR

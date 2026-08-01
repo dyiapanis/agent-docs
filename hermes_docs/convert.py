@@ -1,0 +1,237 @@
+"""hermes_plugins.doc_convert — Document format conversion via pandoc + LaTeX.
+
+Supports: markdown → PDF/DOCX/HTML/ODT/EPUB and any pandoc-supported format pair.
+Writes output to the user's documents directory (via users.filesystem).
+"""
+
+import json
+import logging
+import os
+import platform
+import shutil
+import subprocess
+from pathlib import Path
+from typing import Optional
+
+logger = logging.getLogger(__name__)
+
+# ── user-directory resolution ─
+def _get_user_dir() -> Path:
+    """Resolve output directory for documents."""
+    from hermes_docs import get_output_dir
+    return get_output_dir()
+
+
+def _is_pcloud_path(path: Path) -> bool:
+    """Check if path is under the configured output directory."""
+    try:
+        resolved = path.expanduser().resolve()
+        user_dir = _get_user_dir()
+        return str(resolved).startswith(str(user_dir.parent))  # match up to user base
+    except Exception:
+        return False
+
+
+def _resolve_output_dir(category: str = None) -> Path:
+    """Return output directory with optional category subfolder."""
+    base = _get_user_dir()
+    if category:
+        out = base / category
+        out.mkdir(parents=True, exist_ok=True)
+        return out
+    return base
+
+
+def _platform_install_hint(pkg: str) -> str:
+    """Return a platform-aware install command for a system package."""
+    import platform
+    import shutil as _sh
+    system = platform.system()
+    if system == "Darwin":
+        return f"brew install {pkg}"
+    elif system == "Linux":
+        if _sh.which("pacman"):
+            return f"sudo pacman -S {pkg}"
+        elif _sh.which("dnf"):
+            return f"sudo dnf install {pkg}"
+        elif _sh.which("apt"):
+            return f"sudo apt install {pkg}"
+        else:
+            return f"install {pkg} via your package manager"
+    else:
+        return f"install {pkg} from https://pandoc.org/installing.html"
+
+
+def _check_deps() -> Optional[str]:
+    """Return error string if pandoc or LaTeX is missing, else None.
+
+    Error messages are platform-aware — they suggest the right package
+    manager command for the current OS.
+    """
+    if not shutil.which("pandoc"):
+        hint = _platform_install_hint("pandoc")
+        return f"pandoc is not installed. Install it: `{hint}`"
+    if not shutil.which("pdflatex") and not shutil.which("xelatex"):
+        hint = _platform_install_hint("texlive-xetex" if platform.system() != "Darwin" else "basictex")
+        return f"No LaTeX engine found (pdflatex/xelatex). Install texlive: `{hint}`"
+    return None
+
+
+def _pdf_engine() -> str:
+    """Return preferred LaTeX engine."""
+    if shutil.which("xelatex"):
+        return "xelatex"
+    return "pdflatex"
+
+
+# ── tool ──
+def doc_convert(
+    input_path: str,
+    to_format: str,
+    from_format: str = None,
+    output_path: str = None,
+    extra_args: list = None,
+    category: str = None,
+) -> dict:
+    """Convert a document from one format to another using pandoc.
+
+    Args:
+        input_path: Absolute path to the source document.
+        to_format: Target format (e.g. "pdf", "docx", "html", "odt", "epub").
+        from_format: Optional source format hint (e.g. "markdown", "html").
+                     When omitted, pandoc infers from file extension.
+        output_path: Optional absolute path for the output file.
+                     When omitted, writes to the user's documents directory.
+        extra_args:  Optional extra pandoc CLI flags (e.g. ["--toc", "-V", "geometry:margin=1in"]).
+        category:    Optional subfolder under ~/documents/ (e.g. "reports", "invoices").
+
+    Returns:
+        {"success": bool, "output_path": str, "from_format": str, "to_format": str,
+         "pdf_engine": str | None, "message": str}
+    """
+    dep_err = _check_deps()
+    if dep_err:
+        return {"success": False, "error": dep_err}
+
+    src = Path(input_path).expanduser().resolve()
+    if not src.exists():
+        return {"success": False, "error": f"Source file not found: {src}"}
+
+    # Determine formats
+    src_fmt = from_format or _infer_format(src.suffix.lstrip(".").lower())
+    tgt_fmt = to_format.lower()
+
+    # Determine output path
+    if output_path:
+        out_file = Path(output_path).expanduser().resolve()
+        out_file.parent.mkdir(parents=True, exist_ok=True)
+    else:
+        out_dir = _resolve_output_dir(category)
+        stem = src.stem
+        out_file = out_dir / f"{stem}.{tgt_fmt}"
+
+    # Warn if output is outside the configured output directory
+    if not _is_pcloud_path(Path(output_path)):
+        logger.warning(
+            "doc_convert: output file %s is outside the configured output directory.",
+            output_path,
+        )
+
+    # Build pandoc command
+    cmd = ["pandoc", str(src), "-o", str(out_file), "-f", src_fmt, "-t", tgt_fmt]
+    if tgt_fmt == "pdf":
+        engine = _pdf_engine()
+        cmd.extend(["--pdf-engine", engine])
+    if extra_args:
+        cmd.extend(extra_args)
+
+    try:
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=300)
+        if result.returncode != 0:
+            return {
+                "success": False,
+                "error": f"pandoc failed (exit {result.returncode}): {result.stderr.strip()}",
+            }
+    except subprocess.TimeoutExpired:
+        return {"success": False, "error": "pandoc timed out after 5 minutes."}
+    except Exception as e:
+        return {"success": False, "error": f"pandoc error: {e}"}
+
+    if not out_file.exists():
+        return {"success": False, "error": f"Output file was not created: {out_file}"}
+
+    return {
+        "success": True,
+        "output_path": str(out_file),
+        "from_format": src_fmt,
+        "to_format": tgt_fmt,
+        "pdf_engine": _pdf_engine() if tgt_fmt == "pdf" else None,
+        "message": f"MEDIA:{out_file}\n\nConverted {src.name} → {tgt_fmt}: {out_file}",
+    }
+
+
+def _infer_format(ext: str) -> str:
+    """Map common extensions to pandoc format names."""
+    mapping = {
+        "md": "markdown",
+        "markdown": "markdown",
+        "txt": "plain",
+        "html": "html",
+        "htm": "html",
+        "docx": "docx",
+        "odt": "odt",
+        "pdf": "pdf",
+        "tex": "latex",
+        "rst": "rst",
+        "epub": "epub",
+    }
+    return mapping.get(ext, ext)
+
+
+def _handle_doc_convert(args: dict, **kwargs) -> str:
+    """Handler wrapper for doc_convert tool."""
+    result = doc_convert(**args)
+    if isinstance(result, dict):
+        return json.dumps(result)
+    return result
+
+
+# ── Hermes plugin registration ──
+def register(registry):
+    registry.register_tool(
+        name="doc_convert",
+        toolset="doc-convert",
+        schema={
+            "type": "object",
+            "properties": {
+                "input_path": {
+                    "type": "string",
+                    "description": "Absolute path to the source document.",
+                },
+                "to_format": {
+                    "type": "string",
+                    "description": "Target format: pdf, docx, html, odt, epub, etc.",
+                },
+                "from_format": {
+                    "type": "string",
+                    "description": "Optional source format hint (e.g. markdown, html). Pandoc infers from extension if omitted.",
+                },
+                "output_path": {
+                    "type": "string",
+                    "description": "Optional absolute output path. Defaults to user's documents directory.",
+                },
+                "extra_args": {
+                    "type": "array",
+                    "items": {"type": "string"},
+                    "description": "Optional extra pandoc CLI flags.",
+                },
+                "category": {
+                    "type": "string",
+                    "description": "Optional subfolder under documents/ (e.g. 'reports').",
+                },
+            },
+            "required": ["input_path", "to_format"],
+        },
+        handler=_handle_doc_convert,
+        description="Convert documents between formats (PDF, DOCX, HTML, ODT, EPUB, etc.) using pandoc + LaTeX.",
+    )

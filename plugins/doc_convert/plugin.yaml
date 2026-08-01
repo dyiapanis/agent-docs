@@ -1,0 +1,8 @@
+name: doc_convert
+version: 1.0.0
+description: Convert documents between formats using pandoc + LaTeX. Supports PDF, DOCX, HTML, ODT, EPUB.
+author: Demetri
+pip_dependencies: []
+notes: |
+  Requires system packages: pandoc, texlive (xelatex or pdflatex).
+  Install: sudo apt install pandoc texlive-xetex

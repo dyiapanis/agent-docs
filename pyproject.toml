@@ -1,0 +1,70 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hermes-docs"
+version = "1.0.0"
+description = "Document lifecycle suite for Hermes Agent — create (.docx/.xlsx/.pptx/.pdf/.odt/.ods/.odp), convert (pandoc), and read (anydoc + LiteParse OCR) documents from structured JSON or raw HTML/CSS."
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.11"
+authors = [
+    { name = "D Yiapanis", email = "d@yiapanis.co" },
+]
+keywords = ["hermes", "documents", "docx", "xlsx", "pptx", "pdf", "odt", "pandoc", "anydoc", "document-generation", "markdown", "ocr"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Office/Business :: Office Suites",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+dependencies = []
+
+[project.optional-dependencies]
+create = [
+    "python-docx>=1.0",
+    "openpyxl>=3.1",
+    "python-pptx>=0.6",
+    "weasyprint>=60.0",
+    "odfpy>=1.4",
+    "Pillow>=10.0",
+    "lxml>=5.0",
+]
+read = [
+    "firecrawl-anydoc>=0.1",
+    "liteparse>=0.1",
+    "PyMuPDF>=1.24",
+]
+convert = [
+    "pypandoc>=1.13",
+]  # also requires system pandoc + LaTeX (texlive-xetex)
+all = [
+    "python-docx>=1.0",
+    "openpyxl>=3.1",
+    "python-pptx>=0.6",
+    "weasyprint>=60.0",
+    "odfpy>=1.4",
+    "Pillow>=10.0",
+    "lxml>=5.0",
+    "firecrawl-anydoc>=0.1",
+    "liteparse>=0.1",
+    "PyMuPDF>=1.24",
+    "pypandoc>=1.13",
+]
+dev = [
+    "pytest>=7.0",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/dyiapanis/hermes-docs"
+"Source" = "https://github.com/dyiapanis/hermes-docs"
+"Issues" = "https://github.com/dyiapanis/hermes-docs/issues"
+
+[tool.setuptools.packages.find]
+include = ["hermes_docs*"]

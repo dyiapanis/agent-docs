@@ -1,0 +1,17 @@
+name: doc_create
+version: 1.0.0
+description: Create .docx, .xlsx, .pptx, .pdf, .odt, .ods, .odp documents. PDFs support raw HTML/CSS (Grid, Flexbox, gradients, themes) via weasyprint.
+author: Demetri
+pip_dependencies:
+  - python-docx
+  - openpyxl
+  - python-pptx
+  - weasyprint
+  - odfpy
+  - nano-pdf
+  - xlsxwriter
+notes: |
+  Uses isolated venv at ~/.hermes/venvs/docs/
+  Pillow and lxml are transitive deps (weasyprint + python-pptx pull them in).
+  PDF generation via weasyprint supports both structured JSON and raw HTML/CSS.
+  Also provides pymupdf for doc_edit_pdf (PDF text search-and-replace).

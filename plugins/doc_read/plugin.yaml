@@ -1,0 +1,12 @@
+name: doc_read
+version: 1.0.0
+description: Read documents via anydoc (office formats) + LiteParse (OCR fallback).
+entry: __init__.py
+author: Phoenix
+enabled: true
+pip_dependencies: []
+notes: |
+  Depends on docs venv for:
+    - firecrawl-anydoc: office format parsing (DOCX, XLSX, PPTX, ODT, RTF, EPUB, PDF) → Markdown
+    - liteparse: OCR for scanned PDFs and images (Tesseract)
+  Install: pip install firecrawl-anydoc liteparse
