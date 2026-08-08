@@ -1,4 +1,4 @@
-"""hermes_docs.convert — Document format conversion via pandoc + LaTeX.
+"""agent_docs.convert — Document format conversion via pandoc + LaTeX.
 
 Supports: markdown → PDF/DOCX/HTML/ODT/EPUB and any pandoc-supported format pair.
 Output directory is configurable via DOCS_OUTPUT_DIR (defaults to ~/Documents).
@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 # ── output directory resolution ─
 def _get_output_dir() -> Path:
     """Resolve output directory for documents."""
-    from hermes_docs import get_output_dir
+    from agent_docs import get_output_dir
     return get_output_dir()
 
 

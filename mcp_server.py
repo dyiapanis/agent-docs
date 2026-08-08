@@ -216,7 +216,7 @@ def _handle_tool(name: str, args: dict) -> str:
     """Dispatch a tool call to the appropriate handler and return JSON result."""
     try:
         if name == "doc_read":
-            from hermes_docs.read import read
+            from agent_docs.read import read
             text = read(
                 args["path"],
                 max_chars=args.get("max_chars", 1_000_000),
@@ -231,12 +231,12 @@ def _handle_tool(name: str, args: dict) -> str:
             })
 
         elif name == "doc_read_meta":
-            from hermes_docs.read import read_meta
+            from agent_docs.read import read_meta
             meta = read_meta(args["path"])
             return json.dumps({"success": True, "path": args["path"], "metadata": meta})
 
         elif name == "doc_convert":
-            from hermes_docs.convert import doc_convert
+            from agent_docs.convert import doc_convert
             result = doc_convert(
                 input_path=args["input_path"],
                 to_format=args["to_format"],
@@ -248,10 +248,10 @@ def _handle_tool(name: str, args: dict) -> str:
             return json.dumps(result)
 
         elif name == "doc_create_document":
-            from hermes_docs.create import create_document
+            from agent_docs.create import create_document
             output_path = args.get("output_path")
             if not output_path:
-                from hermes_docs import get_output_dir
+                from agent_docs import get_output_dir
                 import time
                 ts = int(time.time())
                 fmt = args["format"]
@@ -266,7 +266,7 @@ def _handle_tool(name: str, args: dict) -> str:
             return json.dumps(result)
 
         elif name == "doc_edit_pdf":
-            from hermes_docs.create import _edit_pdf_text
+            from agent_docs.create import _edit_pdf_text
             result = _edit_pdf_text(
                 path=args["path"],
                 page=args.get("page", 1),

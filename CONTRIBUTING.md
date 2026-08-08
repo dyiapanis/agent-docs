@@ -1,4 +1,4 @@
-# Contributing to hermes-docs
+# Contributing to agent-docs
 
 Thanks for your interest in contributing! This is a small plugin suite, so the process is lightweight.
 
@@ -9,7 +9,7 @@ Before opening an issue, search [existing issues](https://github.com/dyiapanis/a
 **Bug reports** should include:
 - OS and version (e.g. Ubuntu 24.04, macOS 15.2)
 - Python version (`python --version`)
-- Plugin version (`pip show hermes-docs`)
+- Plugin version (`pip show agent-docs`)
 - Minimal steps to reproduce
 - Expected vs actual behavior
 - Full error output if available
@@ -32,7 +32,7 @@ Before opening an issue, search [existing issues](https://github.com/dyiapanis/a
 
 ```bash
 git clone git@github.com:dyiapanis/agent-docs.git
-cd hermes-docs
+cd agent-docs
 pip install -e ".[all,dev]"
 ```
 
@@ -45,7 +45,7 @@ pip install -e ".[all,dev]"
 ## Project Structure
 
 ```
-hermes_docs/
+agent_docs/
 ├── __init__.py    # Config helpers (get_output_dir, get_docs_venv_python)
 ├── create.py      # Document generation (docx, xlsx, pptx, pdf, odt, ods, odp)
 ├── convert.py     # Format conversion via pandoc

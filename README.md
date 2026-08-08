@@ -28,15 +28,15 @@ hermes plugins install dyiapanis/agent-docs
 **pip install** — use the Python library directly or with Hermes native plugins:
 
 ```bash
-pip install hermes-docs[all]
+pip install agent-docs[all]
 ```
 
 Or install only the modules you need:
 
 ```bash
-pip install hermes-docs[create]    # python-docx, openpyxl, python-pptx, weasyprint, odfpy
-pip install hermes-docs[read]      # firecrawl-anydoc, liteparse, PyMuPDF
-pip install hermes-docs[convert]   # pypandoc (also needs system pandoc)
+pip install agent-docs[create]    # python-docx, openpyxl, python-pptx, weasyprint, odfpy
+pip install agent-docs[read]      # firecrawl-anydoc, liteparse, PyMuPDF
+pip install agent-docs[convert]   # pypandoc (also needs system pandoc)
 ```
 
 ## Modules
@@ -92,7 +92,7 @@ python -m venv ~/.venvs/docs
 Or install the libraries into your main Python environment:
 
 ```bash
-pip install hermes-docs[create]
+pip install agent-docs[create]
 ```
 
 ### Read module
@@ -104,13 +104,13 @@ pip install hermes-docs[create]
 Or:
 
 ```bash
-pip install hermes-docs[read]
+pip install agent-docs[read]
 ```
 
 ### Convert module
 
 ```bash
-pip install hermes-docs[convert]
+pip install agent-docs[convert]
 ```
 
 Requires system-installed pandoc and a LaTeX engine:
@@ -156,7 +156,7 @@ pip install -e ".[all]"
 ### Create a PDF from HTML/CSS
 
 ```python
-from hermes_docs.create import create_document
+from agent_docs.create import create_document
 
 result = create_document(
     format="pdf",
@@ -169,7 +169,7 @@ result = create_document(
 ### Read a DOCX file
 
 ```python
-from hermes_docs.read import read
+from agent_docs.read import read
 
 text = read("/path/to/document.docx")
 # Returns GitHub-Flavored Markdown
@@ -178,7 +178,7 @@ text = read("/path/to/document.docx")
 ### Convert Markdown to PDF
 
 ```python
-from hermes_docs.convert import doc_convert
+from agent_docs.convert import doc_convert
 
 result = doc_convert(
     input_path="/path/to/input.md",

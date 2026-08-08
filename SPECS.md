@@ -1,10 +1,10 @@
-# hermes-docs — Specifications
+# agent-docs — Specifications
 
 ## Architecture
 
 Three independent modules, each with its own engine(s):
 
-### Read (`hermes_docs.read`)
+### Read (`agent_docs.read`)
 
 Two-engine dispatch — anydoc primary, LiteParse fallback:
 
@@ -31,7 +31,7 @@ Dispatch logic:
 
 Tools: `doc_read(path, max_chars, extract_images)`, `doc_read_meta(path)`
 
-### Create (`hermes_docs.create`)
+### Create (`agent_docs.create`)
 
 Structured JSON or raw HTML/CSS → document:
 
@@ -52,7 +52,7 @@ PDF generation supports two modes:
 
 Tool: `doc_create_document(format, content, output_path, options)`
 
-### Convert (`hermes_docs.convert`)
+### Convert (`agent_docs.convert`)
 
 Pandoc-based format conversion:
 
@@ -62,7 +62,7 @@ Pandoc-based format conversion:
 
 Tool: `doc_convert(src, to_format, output_path)`
 
-### Edit (`hermes_docs.create`)
+### Edit (`agent_docs.create`)
 
 PDF text editing via PyMuPDF search-and-replace:
 
@@ -95,5 +95,5 @@ Tool: `doc_edit_pdf(path, page, instruction, output_path)`
 
 | Variable | Purpose | Default |
 |----------|---------|---------|
-| `DOCS_VENV_PYTHON` | Path to docs venv Python binary | `~/.hermes/venvs/docs/bin/python` |
+| `DOCS_VENV_PYTHON` | Path to docs venv Python binary | `~/.venvs/docs/bin/python` |
 | `DOCS_OUTPUT_DIR` | Default output directory for documents | `~/documents` |

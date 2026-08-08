@@ -18,7 +18,7 @@ import subprocess
 from pathlib import Path
 from typing import Any, Dict, Optional
 
-from hermes_docs import get_docs_venv_python
+from agent_docs import get_docs_venv_python
 LITEPARSE_VENV = Path(get_docs_venv_python())
 
 # ── Format classification ────────────────────────────────────────────────────

@@ -1,4 +1,4 @@
-"""hermes-docs — Document lifecycle suite for Hermes Agent.
+"""agent-docs — Document lifecycle suite for Hermes Agent.
 
 Three modules:
   - create  — Generate .docx/.xlsx/.pptx/.pdf/.odt/.ods/.odp from structured JSON
@@ -19,11 +19,11 @@ def get_docs_venv_python() -> str:
     """Path to the Python binary in the docs venv.
 
     Override with DOCS_VENV_PYTHON env var. Defaults to
-    ~/.hermes/venvs/docs/bin/python for Hermes compatibility.
+    ~/.venvs/docs/bin/python.
     """
     return os.environ.get(
         "DOCS_VENV_PYTHON",
-        str(Path.home() / ".hermes" / "venvs" / "docs" / "bin" / "python"),
+        str(Path.home() / ".venvs" / "docs" / "bin" / "python"),
     )
 
 

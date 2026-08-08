@@ -1,4 +1,4 @@
-"""hermes_docs.create — Create .docx, .xlsx, .pptx, .pdf, .odt, .ods, .odp documents from structured JSON.
+"""agent_docs.create — Create .docx, .xlsx, .pptx, .pdf, .odt, .ods, .odp documents from structured JSON.
 
 Uses a dedicated venv for python-docx, openpyxl, python-pptx, weasyprint, odfpy,
 Pillow, and lxml. Configure via DOCS_VENV_PYTHON and DOCS_OUTPUT_DIR env vars.
@@ -15,7 +15,7 @@ from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
-from hermes_docs import get_docs_venv_python
+from agent_docs import get_docs_venv_python
 VENV_PYTHON = get_docs_venv_python()
 
 
@@ -609,7 +609,7 @@ except Exception as e:
 
 def _get_output_dir() -> Path:
     """Resolve output directory for documents."""
-    from hermes_docs import get_output_dir
+    from agent_docs import get_output_dir
     return get_output_dir()
 
 
@@ -657,7 +657,7 @@ def create_document(format: str, content, output_path: str, template: str = None
         return {"success": False, "error": f"Unsupported format: {format}"}
 
     if not shutil.which(VENV_PYTHON):
-        return {"success": False, "error": f"docs venv not found at {VENV_PYTHON}. Create it with: python -m venv ~/.hermes/venvs/docs && ~/.hermes/venvs/docs/bin/pip install python-docx openpyxl python-pptx weasyprint odfpy Pillow lxml PyMuPDF"}
+        return {"success": False, "error": f"docs venv not found at {VENV_PYTHON}. Create it with: python -m venv ~/.venvs/docs && ~/.venvs/docs/bin/pip install python-docx openpyxl python-pptx weasyprint odfpy Pillow lxml PyMuPDF"}
 
     # WeasyPrint needs cairo/pango system libs — check when PDF is requested
     if format == "pdf":
