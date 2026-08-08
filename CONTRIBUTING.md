@@ -4,7 +4,7 @@ Thanks for your interest in contributing! This is a small plugin suite, so the p
 
 ## Reporting Issues
 
-Before opening an issue, search [existing issues](https://github.com/dyiapanis/hermes-docs/issues) to avoid duplicates.
+Before opening an issue, search [existing issues](https://github.com/dyiapanis/agent-docs/issues) to avoid duplicates.
 
 **Bug reports** should include:
 - OS and version (e.g. Ubuntu 24.04, macOS 15.2)
@@ -31,7 +31,7 @@ Before opening an issue, search [existing issues](https://github.com/dyiapanis/h
 ## Development Setup
 
 ```bash
-git clone git@github.com:dyiapanis/hermes-docs.git
+git clone git@github.com:dyiapanis/agent-docs.git
 cd hermes-docs
 pip install -e ".[all,dev]"
 ```
@@ -54,4 +54,4 @@ hermes_docs/
 
 ## Questions?
 
-Open a [discussion](https://github.com/dyiapanis/hermes-docs/discussions) or an issue with the `question` label.
+Open a [discussion](https://github.com/dyiapanis/agent-docs/discussions) or an issue with the `question` label.

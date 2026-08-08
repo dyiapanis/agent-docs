@@ -62,9 +62,9 @@ dev = [
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/dyiapanis/hermes-docs"
-"Source" = "https://github.com/dyiapanis/hermes-docs"
-"Issues" = "https://github.com/dyiapanis/hermes-docs/issues"
+"Homepage" = "https://github.com/dyiapanis/agent-docs"
+"Source" = "https://github.com/dyiapanis/agent-docs"
+"Issues" = "https://github.com/dyiapanis/agent-docs/issues"
 
 [tool.setuptools.packages.find]
 include = ["hermes_docs*"]

@@ -92,7 +92,7 @@ pip install hermes-docs[all]
 Or from source:
 
 ```bash
-git clone https://github.com/dyiapanis/hermes-docs.git
+git clone https://github.com/dyiapanis/agent-docs.git
 cd hermes-docs
 pip install -e ".[all]"
 ```

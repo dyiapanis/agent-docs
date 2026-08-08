@@ -8,7 +8,7 @@
     "url": "https://github.com/dyiapanis"
   },
   "license": "MIT",
-  "homepage": "https://github.com/dyiapanis/hermes-docs",
-  "repository": "https://github.com/dyiapanis/hermes-docs",
+  "homepage": "https://github.com/dyiapanis/agent-docs",
+  "repository": "https://github.com/dyiapanis/agent-docs",
   "keywords": ["documents", "docx", "xlsx", "pptx", "pdf", "odt", "pandoc", "anydoc", "ocr", "document-generation"]
 }
