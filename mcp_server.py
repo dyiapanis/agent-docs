@@ -6,6 +6,10 @@ Exposes three tools:
   - doc_convert:    Convert between formats via pandoc
   - doc_create:     Create documents from structured JSON or raw HTML/CSS
 
+On first startup, if the docs venv is missing, the server runs
+scripts/setup.sh to create a venv in PLUGIN_DATA (or ~/.venvs/docs)
+and install all dependencies automatically.
+
 Run standalone for testing:
     python3 mcp_server.py
 
@@ -15,8 +19,57 @@ Or wire into an MCP client via stdio.
 from __future__ import annotations
 
 import json
+import os
+import subprocess
 import sys
+from pathlib import Path
 from typing import Any
+
+# ── Bootstrap: ensure docs venv exists before serving ───────────────────────
+
+def _ensure_venv() -> str:
+    """Return the path to the docs venv Python, bootstrapping if needed.
+
+    Checks DOCS_VENV_PYTHON env var first. If not set or the venv doesn't
+    exist, runs scripts/setup.sh to create one in PLUGIN_DATA (provided by
+    the v1 client) or ~/.venvs/docs as fallback.
+    """
+    # If DOCS_VENV_PYTHON is set and exists, use it
+    venv_python = os.environ.get("DOCS_VENV_PYTHON")
+    if venv_python and Path(venv_python).exists():
+        return venv_python
+
+    # Determine where to create the venv
+    plugin_data = os.environ.get("PLUGIN_DATA")
+    if plugin_data:
+        venv_dir = Path(plugin_data) / "venv"
+    else:
+        venv_dir = Path.home() / ".venvs" / "docs"
+    
+    venv_python = str(venv_dir / "bin" / "python")
+    
+    if venv_dir.exists() and Path(venv_python).exists():
+        return venv_python
+
+    # Bootstrap: run the setup script
+    plugin_root = Path(__file__).parent.resolve()
+    setup_script = plugin_root / "scripts" / "setup.sh"
+    if not setup_script.exists():
+        sys.stderr.write(f"agent-docs: setup script not found at {setup_script}\n")
+        return venv_python  # let tool calls fail with a helpful error
+
+    sys.stderr.write("agent-docs: bootstrapping docs venv (first run)...\n")
+    data_dir = str(venv_dir.parent) if plugin_data else str(venv_dir)
+    result = subprocess.run(
+        ["bash", str(setup_script), data_dir],
+        capture_output=True, text=True, timeout=300,
+    )
+    if result.returncode != 0:
+        sys.stderr.write(f"agent-docs: bootstrap failed: {result.stderr[:500]}\n")
+    else:
+        sys.stderr.write("agent-docs: venv ready\n")
+    
+    return venv_python
 
 # ── MCP protocol ─────────────────────────────────────────────────────────────
 
@@ -322,6 +375,9 @@ def _handle_request(msg: dict) -> dict | None:
 # ── Main loop ────────────────────────────────────────────────────────────────
 
 def main():
+    # Bootstrap venv on first run
+    _ensure_venv()
+    
     while True:
         msg = _read_message()
         if msg is None:

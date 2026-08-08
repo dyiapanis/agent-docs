@@ -1,4 +1,4 @@
-"""agent-docs — Document lifecycle suite for Hermes Agent.
+"""agent-docs — Document lifecycle suite.
 
 Three modules:
   - create  — Generate .docx/.xlsx/.pptx/.pdf/.odt/.ods/.odp from structured JSON
@@ -18,13 +18,22 @@ __version__ = "1.0.0"
 def get_docs_venv_python() -> str:
     """Path to the Python binary in the docs venv.
 
-    Override with DOCS_VENV_PYTHON env var. Defaults to
-    ~/.venvs/docs/bin/python.
+    Resolution order:
+    1. DOCS_VENV_PYTHON env var (explicit override)
+    2. PLUGIN_DATA/venv/bin/python (v1 client-managed data directory)
+    3. ~/.venvs/docs/bin/python (fallback)
     """
-    return os.environ.get(
-        "DOCS_VENV_PYTHON",
-        str(Path.home() / ".venvs" / "docs" / "bin" / "python"),
-    )
+    explicit = os.environ.get("DOCS_VENV_PYTHON")
+    if explicit and Path(explicit).exists():
+        return explicit
+
+    plugin_data = os.environ.get("PLUGIN_DATA")
+    if plugin_data:
+        p = Path(plugin_data) / "venv" / "bin" / "python"
+        if p.exists():
+            return str(p)
+
+    return str(Path.home() / ".venvs" / "docs" / "bin" / "python")
 
 
 def get_output_dir() -> Path:

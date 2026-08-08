@@ -164,8 +164,21 @@ pip install -e ".[all]"
 
 | Variable | Purpose | Default |
 |----------|---------|---------|
-| `DOCS_VENV_PYTHON` | Python binary for document libraries | System Python |
+| `DOCS_VENV_PYTHON` | Python binary for document libraries | `PLUGIN_DATA/venv/bin/python` or `~/.venvs/docs/bin/python` |
 | `DOCS_OUTPUT_DIR` | Default output directory for generated documents | `~/Documents` |
+| `PLUGIN_DATA` | Client-managed data directory (set by v1 client) | — |
+| `PLUGIN_ROOT` | Plugin root directory (set by v1 client) | — |
+
+### Automatic bootstrap
+
+On first startup, the MCP server checks if the docs venv exists. If not,
+it runs `scripts/setup.sh` to create a venv in `PLUGIN_DATA` (provided by
+the v1 client) or `~/.venvs/docs` as fallback, and installs all dependencies:
+python-docx, openpyxl, python-pptx, weasyprint, odfpy, PyMuPDF, anydoc,
+liteparse, pypandoc.
+
+This means the v1 package is fully self-contained — no manual pip install
+required. The bootstrap runs once; subsequent startups use the existing venv.
 
 ## Usage
 
