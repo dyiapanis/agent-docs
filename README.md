@@ -1,7 +1,43 @@
-# hermes-docs
+# agent-docs
 
-A document lifecycle suite for [Hermes Agent](https://hermes-agent.nousresearch.com):
-create, convert, and read documents from structured JSON or raw HTML/CSS.
+A portable document lifecycle suite: create, convert, and read documents
+from structured JSON or raw HTML/CSS.
+
+## Cross-Platform Compatibility
+
+This package conforms to the [Agent Plugins v1.0.0](https://agent-plugins.org/specification)
+specification. It works with any compatible AI agent client that supports
+MCP servers, including:
+
+- [Hermes Agent](https://hermes-agent.nousresearch.com)
+- [Cursor](https://cursor.com)
+- [Claude Desktop](https://claude.ai/download)
+- Any client that supports the Model Context Protocol
+
+### Two installation paths
+
+**Portable plugin (v1 package)** — works with any v1-compatible client:
+
+```bash
+# Hermes Agent
+hermes plugins install dyiapanis/agent-docs
+
+# Other clients: follow your client's plugin installation instructions
+```
+
+**pip install** — use the Python library directly or with Hermes native plugins:
+
+```bash
+pip install hermes-docs[all]
+```
+
+Or install only the modules you need:
+
+```bash
+pip install hermes-docs[create]    # python-docx, openpyxl, python-pptx, weasyprint, odfpy
+pip install hermes-docs[read]      # firecrawl-anydoc, liteparse, PyMuPDF
+pip install hermes-docs[convert]   # pypandoc (also needs system pandoc)
+```
 
 ## Modules
 
@@ -48,12 +84,12 @@ The create module uses a separate Python venv for heavy document libraries.
 Set `DOCS_VENV_PYTHON` to point to it:
 
 ```bash
-# Create the docs venv
-python -m venv ~/.hermes/venvs/docs
-~/.hermes/venvs/docs/bin/pip install python-docx openpyxl python-pptx weasyprint odfpy Pillow lxml PyMuPDF nano-pdf xlsxwriter
+# Create a dedicated venv
+python -m venv ~/.venvs/docs
+~/.venvs/docs/bin/pip install python-docx openpyxl python-pptx weasyprint odfpy Pillow lxml PyMuPDF nano-pdf xlsxwriter
 ```
 
-Or install the libraries into the main Hermes venv:
+Or install the libraries into your main Python environment:
 
 ```bash
 pip install hermes-docs[create]
@@ -62,7 +98,7 @@ pip install hermes-docs[create]
 ### Read module
 
 ```bash
-~/.hermes/venvs/docs/bin/pip install firecrawl-anydoc liteparse PyMuPDF
+~/.venvs/docs/bin/pip install firecrawl-anydoc liteparse PyMuPDF
 ```
 
 Or:
@@ -80,22 +116,40 @@ pip install hermes-docs[convert]
 Requires system-installed pandoc and a LaTeX engine:
 
 ```bash
+# Debian/Ubuntu
 sudo apt install pandoc texlive-xetex
+
+# macOS
+brew install pandoc basictex
+
+# Arch
+sudo pacman -S pandoc texlive
 ```
 
-## Installation
+### WeasyPrint system dependencies (PDF creation)
 
 ```bash
-pip install hermes-docs[all]
+# Debian/Ubuntu
+sudo apt install libcairo2 libpango-1.0-0 libgdk-pixbuf-2.0-0
+
+# macOS
+brew install cairo pango gdk-pixbuf
 ```
 
-Or from source:
+## Installation from source
 
 ```bash
 git clone https://github.com/dyiapanis/agent-docs.git
-cd hermes-docs
+cd agent-docs
 pip install -e ".[all]"
 ```
+
+## Configuration
+
+| Variable | Purpose | Default |
+|----------|---------|---------|
+| `DOCS_VENV_PYTHON` | Python binary for document libraries | System Python |
+| `DOCS_OUTPUT_DIR` | Default output directory for generated documents | `~/Documents` |
 
 ## Usage
 
@@ -127,11 +181,17 @@ text = read("/path/to/document.docx")
 from hermes_docs.convert import doc_convert
 
 result = doc_convert(
-    src="/path/to/input.md",
+    input_path="/path/to/input.md",
     to_format="pdf",
     output_path="/path/to/output.pdf"
 )
 ```
+
+### Via MCP
+
+The bundled MCP server exposes five tools: `doc_read`, `doc_read_meta`,
+`doc_convert`, `doc_create_document`, `doc_edit_pdf`. Any MCP-compatible
+client can call these directly.
 
 ## License
 

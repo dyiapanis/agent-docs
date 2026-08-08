@@ -5,14 +5,14 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "hermes-docs"
 version = "1.0.0"
-description = "Document lifecycle suite for Hermes Agent — create (.docx/.xlsx/.pptx/.pdf/.odt/.ods/.odp), convert (pandoc), and read (anydoc + LiteParse OCR) documents from structured JSON or raw HTML/CSS."
+description = "Portable document lifecycle suite — create (.docx/.xlsx/.pptx/.pdf/.odt/.ods/.odp), convert (pandoc), and read (anydoc + LiteParse OCR) documents. Agent Plugins v1 compatible."
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.11"
 authors = [
     { name = "D Yiapanis", email = "d@yiapanis.co" },
 ]
-keywords = ["hermes", "documents", "docx", "xlsx", "pptx", "pdf", "odt", "pandoc", "anydoc", "document-generation", "markdown", "ocr"]
+keywords = ["documents", "docx", "xlsx", "pptx", "pdf", "odt", "pandoc", "anydoc", "document-generation", "markdown", "ocr", "agent-plugins", "mcp"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",

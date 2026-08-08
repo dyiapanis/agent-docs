@@ -2,7 +2,7 @@
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "agent-docs",
   "version": "2.0.0",
-  "description": "Document lifecycle suite — create (.docx/.xlsx/.pptx/.pdf/.odt/.ods/.odp), convert (pandoc), and read (anydoc + LiteParse OCR) documents.",
+  "description": "Portable document lifecycle suite — create, convert, and read documents. Agent Plugins v1 compatible.",
   "author": {
     "name": "D Yiapanis",
     "url": "https://github.com/dyiapanis"
