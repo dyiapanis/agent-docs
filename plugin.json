@@ -1,5 +1,5 @@
 {
-  "spec_version": "1.0.0",
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "hermes-docs",
   "version": "2.0.0",
   "description": "Document lifecycle suite — create (.docx/.xlsx/.pptx/.pdf/.odt/.ods/.odp), convert (pandoc), and read (anydoc + LiteParse OCR) documents.",
@@ -8,5 +8,7 @@
     "url": "https://github.com/dyiapanis"
   },
   "license": "MIT",
-  "homepage": "https://github.com/dyiapanis/hermes-docs"
+  "homepage": "https://github.com/dyiapanis/hermes-docs",
+  "repository": "https://github.com/dyiapanis/hermes-docs",
+  "keywords": ["documents", "docx", "xlsx", "pptx", "pdf", "odt", "pandoc", "anydoc", "ocr", "document-generation"]
 }
