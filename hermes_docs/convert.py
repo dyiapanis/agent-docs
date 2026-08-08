@@ -1,7 +1,7 @@
-"""hermes_plugins.doc_convert — Document format conversion via pandoc + LaTeX.
+"""hermes_docs.convert — Document format conversion via pandoc + LaTeX.
 
 Supports: markdown → PDF/DOCX/HTML/ODT/EPUB and any pandoc-supported format pair.
-Writes output to the user's documents directory (via users.filesystem).
+Output directory is configurable via DOCS_OUTPUT_DIR (defaults to ~/Documents).
 """
 
 import json
@@ -15,18 +15,18 @@ from typing import Optional
 
 logger = logging.getLogger(__name__)
 
-# ── user-directory resolution ─
-def _get_user_dir() -> Path:
+# ── output directory resolution ─
+def _get_output_dir() -> Path:
     """Resolve output directory for documents."""
     from hermes_docs import get_output_dir
     return get_output_dir()
 
 
-def _is_pcloud_path(path: Path) -> bool:
+def _is_in_output_dir(path: Path) -> bool:
     """Check if path is under the configured output directory."""
     try:
         resolved = path.expanduser().resolve()
-        user_dir = _get_user_dir()
+        user_dir = _get_output_dir()
         return str(resolved).startswith(str(user_dir.parent))  # match up to user base
     except Exception:
         return False
@@ -34,7 +34,7 @@ def _is_pcloud_path(path: Path) -> bool:
 
 def _resolve_output_dir(category: str = None) -> Path:
     """Return output directory with optional category subfolder."""
-    base = _get_user_dir()
+    base = _get_output_dir()
     if category:
         out = base / category
         out.mkdir(parents=True, exist_ok=True)
@@ -131,7 +131,7 @@ def doc_convert(
         out_file = out_dir / f"{stem}.{tgt_fmt}"
 
     # Warn if output is outside the configured output directory
-    if not _is_pcloud_path(Path(output_path)):
+    if not _is_in_output_dir(Path(output_path)):
         logger.warning(
             "doc_convert: output file %s is outside the configured output directory.",
             output_path,

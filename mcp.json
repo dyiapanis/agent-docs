@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "hermes-docs": {
+      "command": "python3",
+      "args": ["mcp_server.py"],
+      "env": {}
+    }
+  }
+}

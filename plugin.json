@@ -1,0 +1,12 @@
+{
+  "spec_version": "1.0.0",
+  "name": "hermes-docs",
+  "version": "2.0.0",
+  "description": "Document lifecycle suite — create (.docx/.xlsx/.pptx/.pdf/.odt/.ods/.odp), convert (pandoc), and read (anydoc + LiteParse OCR) documents.",
+  "author": {
+    "name": "D Yiapanis",
+    "url": "https://github.com/dyiapanis"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/dyiapanis/hermes-docs"
+}

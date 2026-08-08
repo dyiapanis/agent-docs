@@ -1,7 +1,7 @@
-"""hermes_plugins.doc_create — Create .docx, .xlsx, .pptx, .pdf, .odt, .ods, .odp documents from structured JSON.
+"""hermes_docs.create — Create .docx, .xlsx, .pptx, .pdf, .odt, .ods, .odp documents from structured JSON.
 
-Uses a dedicated venv at ~/.hermes/venvs/docs with python-docx, openpyxl,
-python-pptx, weasyprint, odfpy, Pillow, and lxml.
+Uses a dedicated venv for python-docx, openpyxl, python-pptx, weasyprint, odfpy,
+Pillow, and lxml. Configure via DOCS_VENV_PYTHON and DOCS_OUTPUT_DIR env vars.
 """
 
 import json
@@ -607,17 +607,17 @@ except Exception as e:
 
 # ── core create_document ──
 
-def _get_user_dir() -> Path:
+def _get_output_dir() -> Path:
     """Resolve output directory for documents."""
     from hermes_docs import get_output_dir
     return get_output_dir()
 
 
-def _is_pcloud_path(path: Path) -> bool:
+def _is_in_output_dir(path: Path) -> bool:
     """Check if path is under the configured output directory."""
     try:
         resolved = path.expanduser().resolve()
-        user_dir = _get_user_dir()
+        user_dir = _get_output_dir()
         return str(resolved).startswith(str(user_dir.parent))
     except Exception:
         return False
@@ -637,7 +637,7 @@ def create_document(format: str, content, output_path: str, template: str = None
     out = Path(output_path).expanduser().resolve()
     out.parent.mkdir(parents=True, exist_ok=True)
 
-    if not _is_pcloud_path(out):
+    if not _is_in_output_dir(out):
         logger.warning(
             "doc_create: output file %s is outside the configured output directory.",
             out,
@@ -781,7 +781,7 @@ def _handle_doc_create(params: dict, **kwargs) -> str:
     
     # Default output directory with timestamped filename
     import time
-    cache_dir = _get_user_dir()
+    cache_dir = _get_output_dir()
     cache_dir.mkdir(parents=True, exist_ok=True)
     
     if output_path and "/tmp/" in output_path:
