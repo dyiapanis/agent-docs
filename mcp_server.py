@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""hermes-docs MCP server — stdio Model Context Protocol server.
+"""agent-docs MCP server — stdio Model Context Protocol server.
 
 Exposes three tools:
   - doc_read:       Read/extract text from any document
@@ -293,7 +293,7 @@ def _handle_request(msg: dict) -> dict | None:
         return _result(req_id, {
             "protocolVersion": "2024-11-05",
             "capabilities": {"tools": {}},
-            "serverInfo": {"name": "hermes-docs", "version": "2.0.0"},
+            "serverInfo": {"name": "agent-docs", "version": "2.0.0"},
         })
 
     elif method == "notifications/initialized":
