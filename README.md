@@ -14,18 +14,34 @@ MCP servers, including:
 - [Claude Desktop](https://claude.ai/download)
 - Any client that supports the Model Context Protocol
 
-### Two installation paths
+### Three installation paths
 
-**Portable plugin (v1 package)** — works with any v1-compatible client:
+**Agent Plugins v1 package** — clients that support the v1 spec auto-discover
+`plugin.json` + `mcp.json` from the repo root and launch the MCP server:
 
 ```bash
 # Hermes Agent
-hermes plugins install dyiapanis/agent-docs
+hermes plugins install dyiapanis/agent-docs --no-enable
+hermes plugins enable agent-docs
 
-# Other clients: follow your client's plugin installation instructions
+# Other v1-compatible clients: follow your client's plugin installation instructions
 ```
 
-**pip install** — use the Python library directly or with Hermes native plugins:
+**MCP server (manual)** — point any MCP-compatible client at the server directly:
+
+```json
+{
+  "mcpServers": {
+    "agent-docs": {
+      "type": "stdio",
+      "command": "python3",
+      "args": ["/path/to/agent-docs/mcp_server.py"]
+    }
+  }
+}
+```
+
+**pip install** — use the Python library directly:
 
 ```bash
 pip install agent-docs[all]
