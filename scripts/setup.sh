@@ -4,7 +4,7 @@
 # Called by mcp_server.py on first startup when the docs venv is missing.
 # Can also be run manually:
 #
-#   bash scripts/setup.sh [PLUGIN_DATA_DIR]
+#   bash scripts/setup.sh [DATA_DIR]
 #
 # If PLUGIN_DATA env var is set (by the v1 client), the venv is created there.
 # Otherwise defaults to ~/.venvs/docs.
@@ -24,19 +24,18 @@ fi
 # Install Python dependencies
 "$VENV_DIR/bin/pip" install --quiet --upgrade pip
 "$VENV_DIR/bin/pip" install --quiet \
-    python-docx>=1.0 \
-    openpyxl>=3.1 \
-    python-pptx>=0.6 \
-    weasyprint>=60.0 \
-    odfpy>=1.4 \
-    Pillow>=10.0 \
-    lxml>=5.0 \
-    PyMuPDF>=1.24 \
+    "python-docx>=1.0" \
+    "openpyxl>=3.1" \
+    "python-pptx>=0.6" \
+    "weasyprint>=60.0" \
+    "odfpy>=1.4" \
+    "Pillow>=10.0" \
+    "lxml>=5.0" \
+    "PyMuPDF>=1.24" \
     nano-pdf \
     xlsxwriter \
-    firecrawl-anydoc>=0.1 \
-    liteparse>=0.1 \
-    pypandoc>=1.13
+    "firecrawl-anydoc>=0.1" \
+    "liteparse>=0.1" \
+    "pypandoc>=1.13"
 
 echo "agent-docs: venv ready at $VENV_PYTHON"
-echo "$VENV_PYTHON"
