@@ -24,18 +24,15 @@ fi
 # Install Python dependencies
 "$VENV_DIR/bin/pip" install --quiet --upgrade pip
 "$VENV_DIR/bin/pip" install --quiet \
-    "python-docx>=1.0" \
-    "openpyxl>=3.1" \
-    "python-pptx>=0.6" \
-    "weasyprint>=60.0" \
-    "odfpy>=1.4" \
-    "Pillow>=10.0" \
-    "lxml>=5.0" \
-    "PyMuPDF>=1.24" \
-    nano-pdf \
-    xlsxwriter \
-    "firecrawl-anydoc>=0.1" \
-    "liteparse>=0.1" \
-    "pypandoc>=1.13"
+    "python-docx>=1.0,<2.0" \
+    "openpyxl>=3.1,<4.0" \
+    "python-pptx>=0.6,<2.0" \
+    "weasyprint>=60.0,<70.0" \
+    "odfpy>=1.4,<2.0" \
+    "Pillow>=10.0,<13.0" \
+    "lxml>=5.0,<7.0" \
+    "PyMuPDF>=1.24,<2.0" \
+    "firecrawl-anydoc>=0.1.1,<0.3.0" \
+    "liteparse>=2.0.0,<3.0.0"
 
 echo "agent-docs: venv ready at $VENV_PYTHON"

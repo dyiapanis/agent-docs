@@ -270,8 +270,12 @@ def _build_pdf_script(content: dict, output_path: str, template: str = None, opt
     content_json = json.dumps(content)
     options_json = json.dumps(options or {})
     script = f'''
-import json, os
+import json, os, html
 from weasyprint import HTML, CSS
+
+def _css_escape(s):
+    return s.replace('\\', '\\\\').replace("'", "\\'")
+
 from weasyprint.text.fonts import FontConfiguration
 
 content = json.loads({repr(content_json)})
@@ -287,25 +291,25 @@ try:
 
     css_size = "letter" if page_size.lower() == "letter" else "A4"
 
-    html_parts = ['<html><head><meta charset="utf-8"><title>' + (title or "Document") + '</title></head><body>']
+    html_parts = ['<html><head><meta charset="utf-8"><title>' + html.escape(title or "Document") + '</title></head><body>']
 
     for page in content.get("pages", []):
         html_parts.append('<div class="page">')
         for el in page.get("elements", []):
             etype = el.get("type", "text")
             if etype == "title":
-                html_parts.append(f"<h1>{{el.get('text', '')}}</h1>")
+                html_parts.append(f"<h1>{{html.escape(str(el.get('text', '')))}}</h1>")
             elif etype == "heading":
-                html_parts.append(f"<h2>{{el.get('text', '')}}</h2>")
+                html_parts.append(f"<h2>{{html.escape(str(el.get('text', '')))}}</h2>")
             elif etype == "text":
-                html_parts.append(f"<p>{{el.get('text', '')}}</p>")
+                html_parts.append(f"<p>{{html.escape(str(el.get('text', '')))}}</p>")
             elif etype == "table":
                 rows = el.get("rows", [])
                 html_parts.append('<table class="data-table">')
                 for row in rows:
                     html_parts.append("<tr>")
                     for cell in row:
-                        html_parts.append(f"<td>{{cell}}</td>")
+                        html_parts.append(f"<td>{{html.escape(str(cell))}}</td>")
                     html_parts.append("</tr>")
                 html_parts.append("</table>")
             elif etype == "spacer":
@@ -329,14 +333,14 @@ try:
 
     if header_text:
         css_str += """
-            @page {{ @top-center {{ content: '" + header_text + "'; font-size: 9pt; color: #666; }} }}
+            @page {{ @top-center {{ content: '" + _css_escape(header_text) + "'; font-size: 9pt; color: #666; }} }}
         """
     if footer_text or page_numbers:
         footer_content = footer_text or ""
         if page_numbers:
             footer_content += " Page " + ("" if not footer_text else " ") + "counter(page)"
         css_str += """
-            @page {{ @bottom-center {{ content: '" + footer_content + "'; font-size: 9pt; color: #666; }} }}
+            @page {{ @bottom-center {{ content: '" + _css_escape(footer_content) + "'; font-size: 9pt; color: #666; }} }}
         """
 
     font_config = FontConfiguration()
@@ -556,8 +560,12 @@ def _build_pdf_from_html_script(content: dict, output_path: str, template: str =
     html_str = content.get("html", "")
     options_json = json.dumps(options or {})
     script = f'''
-import json, os
+import json, os, html
 from weasyprint import HTML, CSS
+
+def _css_escape(s):
+    return s.replace('\\', '\\\\').replace("'", "\\'")
+
 from weasyprint.text.fonts import FontConfiguration
 
 output_path = {repr(output_path)}
@@ -894,5 +902,5 @@ def register(registry):
             "required": ["path", "instruction"],
         },
         handler=_handle_doc_edit,
-        description="Edit a PDF page using AI-powered visual editing (nano-pdf + Gemini).",
+        description="Edit a PDF page via local PyMuPDF text search and redaction (no AI service).",
     )

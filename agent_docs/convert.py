@@ -27,7 +27,7 @@ def _is_in_output_dir(path: Path) -> bool:
     try:
         resolved = path.expanduser().resolve()
         user_dir = _get_output_dir()
-        return str(resolved).startswith(str(user_dir.parent))  # match up to user base
+        return resolved != user_dir and user_dir in resolved.parents
     except Exception:
         return False
 
@@ -131,7 +131,7 @@ def doc_convert(
         out_file = out_dir / f"{stem}.{tgt_fmt}"
 
     # Warn if output is outside the configured output directory
-    if not _is_in_output_dir(Path(output_path)):
+    if not _is_in_output_dir(out_file):
         logger.warning(
             "doc_convert: output file %s is outside the configured output directory.",
             output_path,

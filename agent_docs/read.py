@@ -149,7 +149,7 @@ def _read_text(path: str, max_chars: Optional[int] = None) -> str:
 
 # ── Main dispatch ────────────────────────────────────────────────────────────
 
-def read(path: str, max_chars: Optional[int] = None, extract_images: bool = False, max_pages: Optional[int] = None) -> str:
+def read(path: str, max_chars: Optional[int] = None, extract_images: bool = True, max_pages: Optional[int] = None) -> str:
     """Extract text from a document.
 
     Dispatch:
@@ -166,7 +166,7 @@ def read(path: str, max_chars: Optional[int] = None, extract_images: bool = Fals
 
     # 2. Images → LiteParse OCR directly
     if suffix in IMAGE_SUFFIXES:
-        data = _run_liteparse(path, extract_images=True)
+        data = _run_liteparse(path, extract_images=extract_images)
         text = data.get("text") or ""
         if max_chars:
             text = text[:max_chars]
@@ -178,15 +178,15 @@ def read(path: str, max_chars: Optional[int] = None, extract_images: bool = Fals
         anydoc_error = None
         try:
             text = _run_anydoc(path)
-        except RuntimeError as e:
+        except (RuntimeError, ImportError) as e:
             anydoc_error = str(e)
 
         # 4. If anydoc returned empty text (scanned PDF) or failed, try LiteParse OCR
         if not text.strip():
             try:
-                data = _run_liteparse(path, extract_images=True)
+                data = _run_liteparse(path, extract_images=extract_images)
                 text = data.get("text") or ""
-            except RuntimeError as liteparse_err:
+            except (RuntimeError, ImportError) as liteparse_err:
                 if anydoc_error:
                     raise RuntimeError(f"anydoc failed: {anydoc_error}; liteparse fallback also failed: {liteparse_err}")
                 raise RuntimeError(f"both anydoc and liteparse returned no text. liteparse: {liteparse_err}")
@@ -219,7 +219,7 @@ def register(registry):
     if registry is None:
         return
 
-    def doc_read(path: str, max_chars: int = 1_000_000, extract_images: bool = False):
+    def doc_read(path: str, max_chars: int = 1_000_000, extract_images: bool = True):
         import json
         try:
             text = read(path, max_chars=max_chars, extract_images=extract_images)
@@ -259,7 +259,7 @@ def register(registry):
                 "extract_images": {
                     "type": "boolean",
                     "description": "Extract text from images via OCR (LiteParse + Tesseract).",
-                    "default": False,
+                    "default": True,
                 },
             },
             "required": ["path"],
@@ -267,7 +267,7 @@ def register(registry):
         handler=lambda args, **kw: json.dumps(doc_read(
             args["path"],
             max_chars=args.get("max_chars", 1_000_000),
-            extract_images=args.get("extract_images", False),
+            extract_images=args.get("extract_images", True),
         )),
         description="Read and extract text from documents. Uses anydoc for office formats (DOCX, XLSX, PPTX, ODT, RTF, EPUB, PDF → Markdown) and LiteParse for OCR (scanned PDFs, images). Plain text files read directly.",
     )

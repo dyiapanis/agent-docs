@@ -81,13 +81,10 @@ Tool: `doc_edit_pdf(path, page, instruction, output_path)`
 - `python-pptx` — PPTX creation
 - `weasyprint` — PDF generation (HTML/CSS → PDF)
 - `odfpy` — ODT/ODS/ODP creation
-- `nano-pdf` — PDF editing backend
-- `xlsxwriter` — XLSX creation (python-pptx dependency)
 - `Pillow` — Image processing (transitive dep)
 - `lxml` — XML processing (transitive dep)
 
 ### Convert module
-- `pypandoc` — Python wrapper for pandoc
 - `pandoc` (system) — format conversion
 - `texlive-xetex` (system) — LaTeX for PDF generation
 

@@ -136,7 +136,7 @@ TOOLS = [
                 "extract_images": {
                     "type": "boolean",
                     "description": "Extract text from images via OCR (LiteParse + Tesseract).",
-                    "default": False,
+                    "default": True,
                 },
             },
             "required": ["path"],
@@ -273,7 +273,7 @@ def _handle_tool(name: str, args: dict) -> str:
             text = read(
                 args["path"],
                 max_chars=args.get("max_chars", 1_000_000),
-                extract_images=args.get("extract_images", False),
+                extract_images=args.get("extract_images", True),
             )
             return json.dumps({
                 "success": True,

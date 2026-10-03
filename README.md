@@ -52,7 +52,7 @@ Or install only the modules you need:
 ```bash
 pip install agent-docs[create]    # python-docx, openpyxl, python-pptx, weasyprint, odfpy
 pip install agent-docs[read]      # firecrawl-anydoc, liteparse, PyMuPDF
-pip install agent-docs[convert]   # pypandoc (also needs system pandoc)
+pip install agent-docs[convert]   # no python deps (needs system pandoc + texlive-xetex)
 ```
 
 ## Modules
@@ -102,7 +102,7 @@ Set `DOCS_VENV_PYTHON` to point to it:
 ```bash
 # Create a dedicated venv
 python -m venv ~/.venvs/docs
-~/.venvs/docs/bin/pip install python-docx openpyxl python-pptx weasyprint odfpy Pillow lxml PyMuPDF nano-pdf xlsxwriter
+~/.venvs/docs/bin/pip install python-docx openpyxl python-pptx weasyprint odfpy Pillow lxml PyMuPDF firecrawl-anydoc liteparse
 ```
 
 Or install the libraries into your main Python environment:
@@ -174,8 +174,8 @@ pip install -e ".[all]"
 On first startup, the MCP server checks if the docs venv exists. If not,
 it runs `scripts/setup.sh` to create a venv in `PLUGIN_DATA` (provided by
 the v1 client) or `~/.venvs/docs` as fallback, and installs all dependencies:
-python-docx, openpyxl, python-pptx, weasyprint, odfpy, PyMuPDF, anydoc,
-liteparse, pypandoc.
+python-docx, openpyxl, python-pptx, weasyprint, odfpy, PyMuPDF,
+firecrawl-anydoc, liteparse.
 
 This means the v1 package is fully self-contained — no manual pip install
 required. The bootstrap runs once; subsequent startups use the existing venv.
